@@ -1,5 +1,7 @@
 .vscode
 /program.dSYM
+/openGLTest
+/me-courses
 .DS_Store
 
 *.o
