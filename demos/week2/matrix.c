@@ -72,14 +72,11 @@ void init_identity_matrix(float Ematrix[3][3])
 
 void multiply_matrices(const float a[3][3], const float b[3][3], float c[3][3])
 {
-    int i;
-    int j;
-    int k;
+    init_zero_matrix(c);
 
-    for (i = 0; i < 3; ++i) {
-        for (j = 0; j < 3; ++j) {
-            c[i][j] = 0.0;
-            for (k = 0; k < 3; ++k) {
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            for (int k = 0; k < 3; ++k) {
                 c[i][j] += a[i][k] * b[k][j];
             }
         }
@@ -111,36 +108,36 @@ void scale(float matrix[3][3], float scalar, float result[3][3])
     }
 }
 
-void shift(float matrix[3][3], float x, float y, float result[3][3])
-{
-    result[0][0] = matrix[0][0];
-    result[0][1] = matrix[0][1];
-    result[0][2] = matrix[0][2] + x;
-
-    result[1][0] = matrix[1][0];
-    result[1][1] = matrix[1][1];
-    result[1][2] = matrix[1][2] + y;
-
-    result[2][0] = matrix[2][0];
-    result[2][1] = matrix[2][1];
-    result[2][2] = matrix[2][2];
+void shift(const float input[3][3], float tx, float ty, float result[3][3]) {
+    float T[3][3];
+    init_identity_matrix(T);
+    T[0][2] = tx; 
+    T[1][2] = ty; 
+    
+    multiply_matrices(T, input, result);
 }
 
-void rotate(float matrix[3][3], float angle, float result[3][3])
-{
-    float radians = angle * M_PI / 180.0;
-    float cos_angle = cosf(radians);
-    float sin_angle = sinf(radians);
+void rotate(const float input[3][3], float angle, float result[3][3]) {
+    float radians = angle * (M_PI / 180.0);
+    float c = cosf(radians);
+    float s = sinf(radians);
+    
+    float R[3][3] = {
+        {c, -s, 0},
+        {s,  c, 0},
+        {0,  0, 1}
+    };
+    
+    multiply_matrices(R, input, result);
+}
 
-    result[0][0] = matrix[0][0] * cos_angle - matrix[0][1] * sin_angle;
-    result[0][1] = matrix[0][0] * sin_angle + matrix[0][1] * cos_angle;
-    result[0][2] = matrix[0][2];
+void copy_matrix(const float source[3][3], float destination[3][3]) {
+    int i;
+    int j;
 
-    result[1][0] = matrix[1][0] * cos_angle - matrix[1][1] * sin_angle;
-    result[1][1] = matrix[1][0] * sin_angle + matrix[1][1] * cos_angle;
-    result[1][2] = matrix[1][2];
-
-    result[2][0] = matrix[2][0];
-    result[2][1] = matrix[2][1];
-    result[2][2] = matrix[2][2];
+    for (i = 0; i < 3; ++i) {
+        for (j = 0; j < 3; ++j) {
+            destination[i][j] = source[i][j];
+        }
+    }
 }

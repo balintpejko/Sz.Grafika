@@ -26,9 +26,11 @@ void transform_point(const float matrix[3][3], const float point[3], float resul
 
 void scale(float matrix[3][3], float scalar, float result[3][3]);
 
-void shift(float matrix[3][3], float x, float y, float result[3][3]);
+void shift(const float matrix[3][3], float x, float y, float result[3][3]);
 
-void rotate(float matrix[3][3], float angle, float result[3][3]);
+void rotate(const float matrix[3][3], float angle, float result[3][3]);
+
+void copy_matrix(const float source[3][3], float destination[3][3]);
 
 
 #endif // MATRIX_H
