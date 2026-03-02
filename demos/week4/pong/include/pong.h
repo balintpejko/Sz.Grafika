@@ -56,6 +56,8 @@ void set_right_pad_speed(Pong* pong, float speed);
 /**
  * Bounce the ball when necessary.
  */
-void bounce_ball(Pong* pong);
+void bounce_ball(Pong* pong, Pad* left_pad, Pad* right_pad);
+
+void check_pad_collision(Pad* pad, Ball* ball);
 
 #endif /* PONG_H */
