@@ -63,6 +63,15 @@ void handle_game_events(Game* game)
             case SDL_SCANCODE_S:
                 set_left_pad_speed(&(game->pong), 0);
                 break;
+            case SDL_SCANCODE_D:
+                if (game->pong.ball.radius < 100) 
+                    game->pong.ball.radius += 10;
+                break;
+            case SDL_SCANCODE_A:
+                if (game->pong.ball.radius > 20) {
+                    game->pong.ball.radius -= 10;
+                }
+                break;
             default:
                 break;
             }
@@ -70,6 +79,18 @@ void handle_game_events(Game* game)
         case SDL_MOUSEMOTION:
             SDL_GetMouseState(&x, &y);
             set_right_pad_position(&(game->pong), y);
+            break;
+        
+        case SDL_MOUSEBUTTONDOWN:
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                // Teleport the ball to the click position
+                game->pong.ball.x = event.button.x;
+                game->pong.ball.y = event.button.y;
+
+                //Reset speed or give it a fresh start
+                game->pong.ball.speed_x = 300; 
+                game->pong.ball.speed_y = 300;
+            }
             break;
         case SDL_QUIT:
             game->is_running = false;
