@@ -69,11 +69,45 @@ void render_pad(Pad* pad)
     }
     glEnd();
 }
-
-void check_pad_collision(Pad* pad, Ball* ball)
-{
+void check_pad_collision(Pad* pad, Ball* ball) {
     if (ball->x + ball->radius > pad->x && ball->x - ball->radius < pad->x + pad->width &&
-        ball->y + ball->radius > pad->y && ball->y - ball->radius < pad->y + pad->height) {
-        ball->speed_x *= -1;
-    }
+        ball->y + ball->radius > pad->y && ball->y - ball->radius < pad->y + pad->height) 
+    {
+        float overlap_left   = (ball->x + ball->radius) - pad->x;
+        float overlap_right  = (pad->x + pad->width) - (ball->x - ball->radius);
+        float overlap_top    = (ball->y + ball->radius) - pad->y;
+        float overlap_bottom = (pad->y + pad->height) - (ball->y - ball->radius);
+
+        
+        float min_overlap = overlap_left;
+        int side = 0;
+
+        if (overlap_right < min_overlap) { min_overlap = overlap_right; side = 1; }
+        if (overlap_top < min_overlap)   { min_overlap = overlap_top;   side = 2; }
+        if (overlap_bottom < min_overlap){ min_overlap = overlap_bottom; side = 3; }
+
+        float paddle_center_y = pad->y + (pad->height / 2.0f);
+        float d_y = ball->y - paddle_center_y; 
+        float normalized_d_y = d_y / (pad->height / 2.0f);
+
+        switch(side) {
+            case 0: 
+            case 1:
+                ball->speed_x *= -1.05f; 
+                ball->speed_y = normalized_d_y * 400.0f; 
+                
+                if (side == 0) ball->x = pad->x - ball->radius;
+                else           ball->x = pad->x + pad->width + ball->radius;
+                break;
+
+            case 2:
+            case 3: 
+                ball->speed_y *= -1.0f;
+                if (side == 2) ball->y = pad->y - ball->radius;
+                else           ball->y = pad->y + pad->height + ball->radius;
+                break;
+            }
+                
+                ball->speed_x *= 1.05f; 
+            }
 }
