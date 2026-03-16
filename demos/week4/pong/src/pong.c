@@ -46,23 +46,19 @@ void set_right_pad_speed(Pong* pong, float speed)
 
 void bounce_ball(Pong* pong, Pad* left_pad, Pad* right_pad)
 {
-    // 1. Check if we hit the paddles (X-axis logic lives inside these)
+
     check_pad_collision(left_pad, &(pong->ball));
     check_pad_collision(right_pad, &(pong->ball));
-
-    // 2. Wall Bounces (Top and Bottom only)
-    // Top Wall
+    
     if (pong->ball.y - pong->ball.radius < 0) {
         pong->ball.y = pong->ball.radius;
         pong->ball.speed_y *= -1;
     }
-    // Bottom Wall
     if (pong->ball.y + pong->ball.radius > pong->height) {
         pong->ball.y = pong->height - pong->ball.radius;
         pong->ball.speed_y *= -1;
     }
 
-    // 3. Scoring (If ball goes past the 50-pixel line and NO paddle hit it)
     if (pong->ball.x < 0) {
         init_ball(&(pong->ball), pong->width / 2, pong->height / 2);
     }
